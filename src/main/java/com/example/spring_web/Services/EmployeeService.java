@@ -1,14 +1,15 @@
 package com.example.spring_web.Services;
 
-import com.example.spring_web.Configs.ModelConfig;
 import com.example.spring_web.DTO.EmployeeDTO;
 import com.example.spring_web.Entity.EmployeeEntity;
 import com.example.spring_web.Repository.EmployeeRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.util.ReflectionUtils;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,5 +47,44 @@ public class EmployeeService {
         EmployeeEntity saveEmpEntity = employeeRepository.save(toSaveEntity);
 //        Now we return again converting entity to DTO
         return modelMapper.map(saveEmpEntity,EmployeeDTO.class);
+    }
+
+    public EmployeeDTO updateEmployeeData(Long id, EmployeeDTO employeeDTO) {
+//        if given id of employee is not present
+        EmployeeEntity employeeEntity = modelMapper.map(employeeDTO,EmployeeEntity.class);
+//        then create the employee
+//        if present then update the employee data with set id.
+        employeeEntity.setId(id);
+//        save the data
+        EmployeeEntity saveEmpEntity = employeeRepository.save(employeeEntity);
+//        return
+        return modelMapper.map(saveEmpEntity,EmployeeDTO.class);
+    }
+
+    public boolean deleteEmployee(Long empId) {
+        boolean isExist = employeeRepository.existsById(empId);
+        if (!isExist) return false;
+        employeeRepository.deleteById(empId);
+        return true;
+    }
+
+    public EmployeeDTO updatePartiallyData(Map<String, Object> updates, Long empId) {
+        boolean isExist = employeeRepository.existsById(empId);
+        if (!isExist) return null;
+        EmployeeEntity employeeEntity = employeeRepository.findById(empId).get();
+        updates.forEach((field,value)->{
+//            ReflectionUtils is java class which is use for update any class fields.
+//            find passing field and store in field object
+            Field fieldToUpdate= ReflectionUtils.findRequiredField(EmployeeEntity.class,field);
+//            field is other class is private, so we have to convert public so that we can update that field data.
+            fieldToUpdate.setAccessible(true);
+//            then set the field data new value which is pass by user in json format.
+            ReflectionUtils.setField(fieldToUpdate,employeeEntity,value);
+        });
+
+//        then simply save the data and convert to dto the return.
+
+        return modelMapper.map(employeeRepository.save(employeeEntity),EmployeeDTO.class);
+
     }
 }

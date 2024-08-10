@@ -1,5 +1,6 @@
 package com.example.spring_web.Entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+//Entity is use for create table inside our database. And it returns what ever data we have in table is give in json format.
 public class EmployeeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,5 +23,7 @@ public class EmployeeEntity {
     private String email;
     private Integer age;
     private LocalDate date;
+    @JsonProperty("isActive")//JsonProperty we use bcz of confusion like in isActive it confuse json object .
+//    so we specify the json to isActive is our property whose name is isActive.
     private Boolean isActive;
 }

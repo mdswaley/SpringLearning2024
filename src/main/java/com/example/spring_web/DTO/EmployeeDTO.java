@@ -1,72 +1,25 @@
 package com.example.spring_web.DTO;
 
-import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+import java.time.LocalDate;
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+//DTO is use for take data from client in json format.
 public class EmployeeDTO {
     private Long id;
     private String name;
     private String email;
     private Integer age;
     private LocalDate date;
+    @JsonProperty("isActive") //JsonProperty we use bcz of confusion like in isActive it confuse json object .
+//    so we specify the json to isActive is our property whose name is isActive.
     private Boolean isActive;
 
-    public EmployeeDTO(){
-
-    }
-    public EmployeeDTO(Long id, String name, String email, Integer age, LocalDate date, Boolean isActive) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.age = age;
-        this.date = date;
-        this.isActive = isActive;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public Boolean getActive() {
-        return isActive;
-    }
-
-    public void setActive(Boolean active) {
-        isActive = active;
-    }
 }
