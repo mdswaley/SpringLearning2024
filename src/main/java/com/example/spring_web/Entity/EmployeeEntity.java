@@ -26,4 +26,7 @@ public class EmployeeEntity {
     @JsonProperty("isActive")//JsonProperty we use bcz of confusion like in isActive it confuse json object .
 //    so we specify the json to isActive is our property whose name is isActive.
     private Boolean isActive;
+    private String role;
+
+    private Double salary;
 }

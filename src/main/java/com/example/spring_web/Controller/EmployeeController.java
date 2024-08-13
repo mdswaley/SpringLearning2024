@@ -4,6 +4,7 @@ import com.example.spring_web.DTO.EmployeeDTO;
 import com.example.spring_web.Entity.EmployeeEntity;
 import com.example.spring_web.Repository.EmployeeRepository;
 import com.example.spring_web.Services.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -51,17 +52,19 @@ public class EmployeeController {
        return ResponseEntity.ok(employeeService.getAllData());
     }
 
+//    @Valid :- is use for checking validation first if all are good request then it go to the service layer.
     @PostMapping
-    public ResponseEntity<EmployeeDTO> addData(@RequestBody EmployeeDTO input){
+    public ResponseEntity<EmployeeDTO> addData(@RequestBody @Valid EmployeeDTO input){
         EmployeeDTO employeeDTO = employeeService.addData(input);
         return new ResponseEntity<>(employeeDTO, HttpStatus.CREATED);
     }
 
-//    when user try to update data, but they only provide in json data some property not send all the data to update
-//    then after update or click send data in result the id which data you updated some data you provide only
-//    that data show or update and rest of field data showing null value.
+//    When a user attempts to update data but only provides some properties in the JSON payload
+//    (not all the data), after the update, the returned result should include the ID of the updated record.
+//    The response should show the updated fields with their new values, while the fields not provided in the
+//    request should retain their original values instead of being set to null.
     @PutMapping(path="/{empId}")
-    public ResponseEntity<EmployeeDTO> updateEmployeeData(@RequestBody EmployeeDTO employeeDTO,@PathVariable(name = "empId") Long id){
+    public ResponseEntity<EmployeeDTO> updateEmployeeData(@RequestBody @Valid EmployeeDTO employeeDTO,@PathVariable(name = "empId") Long id){
         return ResponseEntity.ok(employeeService.updateEmployeeData(id,employeeDTO));
     }
 
