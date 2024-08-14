@@ -2,10 +2,10 @@ package com.example.spring_web.Services;
 
 import com.example.spring_web.DTO.EmployeeDTO;
 import com.example.spring_web.Entity.EmployeeEntity;
+import com.example.spring_web.Exception.ResourceNotFound;
 import com.example.spring_web.Repository.EmployeeRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.util.ReflectionUtils;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -55,6 +55,7 @@ public class EmployeeService {
     }
 
     public EmployeeDTO updateEmployeeData(Long id, EmployeeDTO employeeDTO) {
+        isExistData(id);
 //        if given id of employee is not present
         EmployeeEntity employeeEntity = modelMapper.map(employeeDTO,EmployeeEntity.class);
 //        then create the employee
@@ -66,16 +67,19 @@ public class EmployeeService {
         return modelMapper.map(saveEmpEntity,EmployeeDTO.class);
     }
 
-    public boolean deleteEmployee(Long empId) {
+
+    public void isExistData(Long empId){
         boolean isExist = employeeRepository.existsById(empId);
-        if (!isExist) return false;
+        if (!isExist) throw new ResourceNotFound("Not found Id which you want to Delete.");
+    }
+    public boolean deleteEmployee(Long empId) {
+        isExistData(empId);
         employeeRepository.deleteById(empId);
         return true;
     }
 
     public EmployeeDTO updatePartiallyData(Map<String, Object> updates, Long empId) {
-        boolean isExist = employeeRepository.existsById(empId);
-        if (!isExist) return null;
+        isExistData(empId);
         EmployeeEntity employeeEntity = employeeRepository.findById(empId).get();
         updates.forEach((field,value)->{
 //            ReflectionUtils is java class which is use for update any class fields.

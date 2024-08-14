@@ -1,5 +1,6 @@
 package com.example.spring_web.DTO;
 
+import com.example.spring_web.annotations.EmployeeAgeValidation;
 import com.example.spring_web.annotations.EmployeeRoleValidation;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Entity;
@@ -32,6 +33,7 @@ public class EmployeeDTO {
     @Max(value = 60 , message = "age should be less than 60")
     @Min(value = 25,message = "age should be greater then 25")
     @NotNull
+    @EmployeeAgeValidation
     private Integer age;
 
     @Past(message = "only past date is allow")

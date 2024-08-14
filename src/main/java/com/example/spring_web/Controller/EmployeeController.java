@@ -2,6 +2,7 @@ package com.example.spring_web.Controller;
 
 import com.example.spring_web.DTO.EmployeeDTO;
 import com.example.spring_web.Entity.EmployeeEntity;
+import com.example.spring_web.Exception.ResourceNotFound;
 import com.example.spring_web.Repository.EmployeeRepository;
 import com.example.spring_web.Services.EmployeeService;
 import jakarta.validation.Valid;
@@ -12,11 +13,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.NoSuchFileException;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 //@Controller :- not contain @ResponseBody annotation
 @RestController // contain @ResponseBody annotation
@@ -44,8 +43,11 @@ public class EmployeeController {
         Optional<EmployeeDTO> employeeDTO =  employeeService.getDataById(id);
         return employeeDTO
                 .map((employeeDTO1 -> ResponseEntity.ok(employeeDTO1)))
-                .orElse(ResponseEntity.notFound().build());
+//                .orElse(ResponseEntity.notFound().build());
+//                .orElseThrow(() -> new NoSuchElementException("not found"));
+                  .orElseThrow(() -> new ResourceNotFound("Resource not found id : "+id)); //custom exception create.
     }
+
 
     @GetMapping()
     public ResponseEntity<List<EmployeeDTO>> getAll(@RequestParam(required = false) Integer age, @RequestParam(required = false) String sortBy){
