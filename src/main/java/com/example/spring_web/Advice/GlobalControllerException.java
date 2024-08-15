@@ -21,25 +21,26 @@ public class GlobalControllerException {
 //    }
 
     @ExceptionHandler(ResourceNotFound.class)
-    public ResponseEntity<ApiError> handleResourceNotFound(ResourceNotFound exception){
-        ApiError api = ApiError.builder()
+    public ResponseEntity<ApiResponse<?>> handleResourceNotFound(ResourceNotFound exception){
+        ApiError error = ApiError.builder()
                 .status(HttpStatus.NOT_FOUND)
                 .message(exception.getMessage())
                 .build();
-        return new ResponseEntity<>(api,HttpStatus.NOT_FOUND);
+        return buildErrorResponseEntity(error);
     }
 
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiError> handleAllException(Exception exception){
+    public ResponseEntity<ApiResponse<?>> handleAllException(Exception exception){
         ApiError api = ApiError.builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .message(exception.getMessage())
                 .build();
-        return new ResponseEntity<>(api,HttpStatus.INTERNAL_SERVER_ERROR);
+        return buildErrorResponseEntity(api);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiError> handleInputValidationError(MethodArgumentNotValidException exception){
+    public ResponseEntity<ApiResponse<?>> handleInputValidationError(MethodArgumentNotValidException exception){
 
         List<String> errors = exception
                 .getBindingResult() //bind all error
@@ -53,7 +54,12 @@ public class GlobalControllerException {
                 .message("Input validation failed")
                 .subError(errors)
                 .build();
-        return new ResponseEntity<>(api,HttpStatus.BAD_REQUEST);
+        return buildErrorResponseEntity(api);
     }
+
+    private ResponseEntity<ApiResponse<?>> buildErrorResponseEntity(ApiError error) {
+        return new ResponseEntity<>(new ApiResponse<>(error),error.getStatus());
+    }
+
 
 }
