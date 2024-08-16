@@ -74,6 +74,9 @@ public class EmployeeService {
     }
     public boolean deleteEmployee(Long empId) {
         isExistData(empId);
+        EmployeeEntity employeeEntity = employeeRepository.findById(empId)
+                .orElseThrow(() -> new ResourceNotFound("Not found Id which you want to delete."));
+
         employeeRepository.deleteById(empId);
         return true;
     }

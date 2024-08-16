@@ -1,5 +1,6 @@
 package com.example.spring_web.Controller;
 
+import com.example.spring_web.Advice.ApiResponse;
 import com.example.spring_web.DTO.EmployeeDTO;
 import com.example.spring_web.Entity.EmployeeEntity;
 import com.example.spring_web.Exception.ResourceNotFound;
@@ -7,10 +8,7 @@ import com.example.spring_web.Repository.EmployeeRepository;
 import com.example.spring_web.Services.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.NoSuchFileException;
@@ -71,9 +69,10 @@ public class EmployeeController {
     }
 
     @DeleteMapping(path = "/{empId}")
-    public ResponseEntity<String> deleteEmployee(@PathVariable Long empId){
+    public ResponseEntity<ApiResponse<String>> deleteEmployee(@PathVariable Long empId){
         boolean isDelete = employeeService.deleteEmployee(empId);
-        if (isDelete) return ResponseEntity.ok("deleted id "+empId);
+        ApiResponse<String> api = new ApiResponse<>("Deleted successfully"+empId);
+        if (isDelete) return new ResponseEntity<>(api,HttpStatus.OK);
         return ResponseEntity.notFound().build();
     }
 
